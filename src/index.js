@@ -119,6 +119,7 @@ function returnBadArguments(fn, ...rest) {
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
 function calculator(num = 0) {
+    var number = num;
 
     if (typeof(num) != 'number') {
         throw new Error('number is not a number');
@@ -127,7 +128,8 @@ function calculator(num = 0) {
     var obj = {
         number: 0,
         sum: function() {
-            var res = this.number;
+            // var res = this.number;
+            var res = number;
 
             for (var i = 0; i < arguments.length; i++) {
                 res += arguments[i];
@@ -136,7 +138,8 @@ function calculator(num = 0) {
             return res;
         },
         dif: function() {
-            var res = this.number;
+            // var res = this.number;
+            var res = number;
 
             for (var i = 0; i < arguments.length; i++) {
                 res -= arguments[i];
@@ -145,7 +148,8 @@ function calculator(num = 0) {
             return res;
         },
         div: function () {
-            var res = this.number;
+            // var res = this.number;
+            var res = number;
 
             for (var i = 0; i < arguments.length; i++) {
                 if (arguments[i] == 0 ) {
@@ -157,7 +161,8 @@ function calculator(num = 0) {
             return res;
         },
         mul: function() {
-            var res = this.number;
+            // var res = this.number;
+            var res = number;
 
             for (var i = 0; i < arguments.length; i++) {
                 res *= arguments[i];
@@ -167,7 +172,7 @@ function calculator(num = 0) {
         }
     };
     
-    obj.number = num;
+    // obj.number = num;
     
     return obj;
 }
