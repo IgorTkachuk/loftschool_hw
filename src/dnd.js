@@ -27,6 +27,37 @@ const homeworkContainer = document.querySelector('#homework-container');
    homeworkContainer.appendChild(newDiv);
  */
 function createDiv() {
+    var div = document.createElement('div'),
+        docHeight = document.documentElement.clientHeight,
+        docWidth = document.documentElement.clientWidth;
+        
+    const minHeight = 30,
+        minWidth = 30;
+    
+    function getRandomInRange(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    var top = getRandomInRange(0, docHeight - minHeight);
+    var left = getRandomInRange(0, docWidth - minWidth);
+    
+    var height = getRandomInRange(minHeight, docHeight - top);
+    var width = getRandomInRange(minWidth, docWidth - left);
+    
+    var clrR = getRandomInRange(0, 255);
+    var clrG = getRandomInRange(0, 255);
+    var clrB = getRandomInRange(0, 255);
+        
+    div.classList.add('draggable-div');
+    
+    div.style.position = 'absolute';
+    div.style.top = top + 'px';
+    div.style.left = left + 'px';
+    div.style.height = height + 'px';
+    div.style.width = width + 'px';
+    div.style.backgroundColor = 'rgb(' + [clrR, clrG, clrB].join(',') + ')';
+    
+    return div;
 }
 
 /*
@@ -38,6 +69,37 @@ function createDiv() {
    addListeners(newDiv);
  */
 function addListeners(target) {
+    var catched = false,
+        startPos = {
+            x: 0,
+            y: 0,
+            targetX: 0,
+            targetY: 0
+        };
+    
+    target.addEventListener('mousedown', (e) => {
+        catched = true;
+        startPos.x = e.clientX;
+        startPos.y = e.clientY;
+        startPos.targetX = parseInt(target.style.left);
+        startPos.targetY = parseInt(target.style.top);
+    });
+    
+    target.addEventListener('mouseup', () => {
+        catched = false;
+    });
+    
+    target.addEventListener('mousemove', (e) => {
+        var deltaX, deltaY;
+        
+        if (catched) {
+            deltaY = e.clientY - startPos.y;
+            deltaX = e.clientX - startPos.x;
+
+            target.style.top = startPos.targetY + deltaY + 'px';
+            target.style.left = startPos.targetX + deltaX + 'px';
+        }
+    });
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
