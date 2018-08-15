@@ -43,10 +43,90 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+function fillCookies() {
+
+    function sortCookies(a, b) {
+        let aName = a.split('=')[0],
+            bName = b.split('=')[0];
+            
+        if (aName > bName) { 
+            return 1;
+        }
+
+        if (aName < bName) {
+            return -1;
+        }
+        
+        return 0;
+    }
+    
+    resetListTable();
+    
+    let cookies = document.cookie.split('; ').sort(sortCookies);
+
+    if (filterNameInput.value.length != 0) {
+        cookies = cookies.filter((c) => {
+            let [cName, cVal] = c.split('=');
+
+            return ( isMatching(cName, filterNameInput.value) || isMatching(cVal, filterNameInput.value) );
+        });
+    }
+
+    for (let cookie of cookies) {
+        insertListTableRow(cookie);
+    }
+}
+
+function insertListTableRow(rowData) {
+    const [name, value] = rowData.split('=');
+    
+    let tr = document.createElement('tr'),
+        tdFirst = document.createElement('td'),
+        tdSecond = document.createElement('td'),
+        btn = document.createElement('button');
+    
+    tdFirst.innerHTML = name;
+    tdSecond.innerHTML = value;
+    btn.innerHTML = 'Удалить cookie';
+    btn.addEventListener('click', () => {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        tr.remove();
+    });
+    
+    tr.appendChild(tdFirst);
+    tr.appendChild(tdSecond);
+    tr.appendChild(btn);
+    
+    listTable.appendChild(tr);
+}
+
+function isMatching(full, chunk) {
+    var sFull = full.toLowerCase(),
+        sChunk = chunk.toLowerCase();
+    
+    return sFull.indexOf(sChunk) > -1;
+}
+
+function resetListTable() {
+    let elForRemove = [];
+
+    for (let row of listTable.children) {
+        elForRemove.push(row);
+    }
+    
+    for (let el of elForRemove) {
+        el.remove();
+    }
+}
+
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    fillCookies();
 });
 
 addButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+
+    fillCookies();
 });
