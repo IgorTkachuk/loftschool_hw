@@ -38,16 +38,21 @@ const homeworkContainer = document.querySelector('#homework-container');
  */
 function loadTowns() {
     
-    function compareTownNames(a, b) {
+    const compareTownNames = (a, b) => {
         if (a.name > b.name) {
             return 1;
         }
-        
-        return -1;
+
+        if (a.name < b.name) {
+            return -1;
+        }
+
+        return 0;
     }
     
     return new Promise ((resolve, reject) => {
         const xhr = new XMLHttpRequest();
+        const errMsg = 'Не удалось загрузить города';
         
         xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
         xhr.responseType = 'json';
@@ -55,11 +60,14 @@ function loadTowns() {
         
         xhr.addEventListener('load', () => {
             if (xhr.status >= 400) {
-                reject('Не удалось загрузить города');
+                reject(errMsg);
             } else {
                 resolve(xhr.response.sort(compareTownNames));
             }
         });
+
+        xhr.addEventListener('abort', () => reject(errMsg));
+        xhr.addEventListener('error', () => reject(errMsg));
     });
     
 }
@@ -79,11 +87,7 @@ function isMatching(full, chunk) {
     var sFull = full.toLowerCase(),
         sChunk = chunk.toLowerCase();
     
-    if (sFull.indexOf(sChunk) > -1) {
-        return true;
-    }
-
-    return false;
+    return sFull.indexOf(sChunk) > -1;
 }
 
 /* Блок с надписью "Загрузка" */
