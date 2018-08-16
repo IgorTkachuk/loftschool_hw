@@ -60,8 +60,12 @@ function fillCookies() {
         return 0;
     }
     
+    if (!document.cookie) {
+        return;
+    }
+
     resetListTable();
-    
+
     let cookies = document.cookie.split('; ').sort(sortCookies);
 
     if (filterNameInput.value.length != 0) {
@@ -130,3 +134,5 @@ addButton.addEventListener('click', () => {
 
     fillCookies();
 });
+
+fillCookies();
